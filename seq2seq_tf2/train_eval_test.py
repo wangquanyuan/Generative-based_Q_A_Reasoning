@@ -6,8 +6,6 @@ from seq2seq_tf2.test_helper import beam_decode, greedy_decode
 from tqdm import tqdm
 from utils.data_utils import get_result_filename
 import pandas as pd
-# from rouge import Rouge
-import pprint
 
 
 
@@ -85,7 +83,7 @@ def save_predict_result(results, params):
     test_df = pd.read_csv(params['test_x_dir'])
     # 填充结果
     test_df['Prediction'] = results[:20000]
-    # 　提取ID和预测结果两列
+    # 提取ID和预测结果两列
     test_df = test_df[['QID', 'Prediction']]
     # 保存结果.
     result_save_path = get_result_filename(params)
@@ -104,22 +102,6 @@ def test_and_save(params):
                 f.write("\n\nabstract:\n")
                 f.write(trial.abstract)
             pbar.update(1)
-
-
-def evaluate(params):
-    gen = test(params)
-    reals = []
-    preds = []
-    with tqdm(total=params["max_num_to_eval"], position=0, leave=True) as pbar:
-        for i in range(params["max_num_to_eval"]):
-            trial = next(gen)
-            reals.append(trial.real_abstract)
-            preds.append(trial.abstract)
-            pbar.update(1)
-    r = Rouge()
-    scores = r.get_scores(preds, reals, avg=True)
-    print("\n\n")
-    pprint.pprint(scores)
 
 
 if __name__ == '__main__':
