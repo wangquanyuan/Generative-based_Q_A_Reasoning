@@ -48,6 +48,7 @@ def parse_data(train_path, test_path):
     test_x = test_df.Question.str.cat(test_df.Dialogue)
     test_x = test_x.apply(preprocess_sentence)
     print('test_x is ', len(test_x))
+    # 保存时侯要注意索引和表头都去掉，index=None, header=False
     train_x.to_csv('{}/datasets/train_set.seg_x.txt'.format(BASE_DIR), index=None, header=False)
     train_y.to_csv('{}/datasets/train_set.seg_y.txt'.format(BASE_DIR), index=None, header=False)
     test_x.to_csv('{}/datasets/test_set.seg_x.txt'.format(BASE_DIR), index=None, header=False)
