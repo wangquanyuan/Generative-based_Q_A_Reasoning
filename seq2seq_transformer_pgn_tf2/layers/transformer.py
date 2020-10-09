@@ -112,7 +112,7 @@ class Embedding(tf.keras.layers.Layer):
 
 	def call(self, x):
 		embed_x = self.embedding(x)  # (batch_size, target_seq_len, d_model)
-		embed_x *= tf.math.sqrt(tf.cast(self.d_model, tf.float32)) # ***这一步 干什么
+		embed_x *= tf.math.sqrt(tf.cast(self.d_model, tf.float32))
 		embed_x += self.pos_encoding[:, :tf.shape(x)[1], :]
 		return embed_x
 

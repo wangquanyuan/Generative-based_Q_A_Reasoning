@@ -6,7 +6,7 @@ from seq2seq_transformer_pgn_tf2.layers.transformer import create_masks
 
 loss_object = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False, reduction='none')
 def loss_function(real, pred):
-	mask = tf.math.logical_not(tf.math.equal(real, 1)) #*** 这句是干什么
+	mask = tf.math.logical_not(tf.math.equal(real, 1))
 	loss_ = loss_object(real, pred)
 
 	mask = tf.cast(mask, dtype=loss_.dtype)

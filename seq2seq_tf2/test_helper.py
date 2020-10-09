@@ -33,27 +33,21 @@ def batch_greedy_decode(model, enc_data, vocab, params):
     # inputs = batch_data # shape=(3, 115)
     # 输入batch转成tensor
     inputs = tf.convert_to_tensor(batch_data)
-    #print(inputs) # ***为什么是184维的
+    #print(inputs)
     # hidden = [tf.zeros((batch_size, params['enc_units']))]
     # enc_output, enc_hidden = model.encoder(inputs, hidden)
     enc_output, enc_hidden = model.call_encoder(inputs)
 
     dec_hidden = enc_hidden
     # dec_input = tf.expand_dims([vocab.word_to_id(vocab.START_DECODING)] * batch_size, 1)
-    dec_input = tf.constant([2] * batch_size)
+    dec_input = tf.constant([2] * batch_size) # 2 是 [START] 对应的token
     dec_input = tf.expand_dims(dec_input, axis=1)
 
     context_vector, _ = model.attention(dec_hidden, enc_output)
     for t in range(params['max_dec_len']):
         # 单步预测
-        """
-        your code, 通过调用decoder得到预测的概率分布
-        """
         _, pred, dec_hidden = model.decoder(dec_input, dec_hidden, enc_output, context_vector)
         context_vector, _ = model.attention(dec_hidden, enc_output)
-        """
-        your code, 通过调用tf.argmax完成greedy search，得到predicted_ids
-        """
         # 取出网络输出的预测向量中最大值的下标，然后Tensor2Numpy
         predicted_ids = tf.argmax(pred, 1).numpy()
         for index, predicted_id in enumerate(predicted_ids):
@@ -139,24 +133,10 @@ class Hypothesis:
 
 def batch_beam_decode(model, batch, vocab, params):
 
-    # def decode_onestep(model, enc_inp, enc_outputs, dec_input, dec_state, enc_extended_inp, # ***这个函数为甚们要写在其他函数里
-    #                   batch_oov_len, enc_pad_mask, use_coverage, prev_coverage):
-
     def decode_onestep(model, enc_output, dec_input, dec_state):
         """
             Method to decode the output step by step (used for beamSearch decoding)
-            Args:
-                sess : tf.Session object
-                batch : current batch, shape = [beam_size, 1, vocab_size( + max_oov_len if pointer_gen)]
-                (for the beam search decoding, batch_size = beam_size)
-                enc_outputs : hiddens outputs computed by the encoder LSTM
-                dec_state : beam_size-many list of decoder previous state, LSTMStateTuple objects,
-                shape = [beam_size, 2, hidden_size]
-                dec_input : decoder_input, the previous decoded batch_size-many words, shape = [beam_size, embed_size]
-                cov_vec : beam_size-many list of previous coverage vector
-            Returns: A dictionary of the results of all the ops computations (see below for more details)
         """
-
         context_vector, attentions = model.attention(dec_state, enc_output)
 
         _, final_dists, dec_hidden = model.decoder(dec_input,
@@ -237,27 +217,15 @@ def batch_beam_decode(model, batch, vocab, params):
         num = 1
         # print('num_orig_hyps is ', num_orig_hyps)
         for i in range(num_orig_hyps):
-            # h, new_state, attn_dist, p_gen, coverage = hyps[i], new_states[i], attn_dists[i], p_gens[i], prev_coverages[i]
             h, new_state, attn_dist = hyps[i], new_states[i], attn_dists[i]
             # print('h is ', h)
-            # print('new_state is ', new_state) shape=(256,)
-            # print('attn_dist ids ', attn_dist) shape=(115,)
-            # print('p_gen is ', p_gen) 0.4332452
-            # print('coverage is ', coverage)shape=(115, 1),
+
             num += 1
             # print('num is ', num)
             # all_hyps 中收集所有组合，一共beam_size*beam_size*2个
             for j in range(params['beam_size'] * 2):
                 # we extend each hypothesis with each of the top k tokens
-                # (this gives 2 x beam_size new hypothesises for each of the beam_size old hypothesises)
-                # print('topk_ids is ', topk_ids) shape=(3, 6)
-                # print('token is ', topk_log_probs)
-                # print('topk_log_probs is ', topk_log_probs)shape=(3, 6)
-                # print(topk_ids[i, j].numpy())
-                # print('steps is ', steps)
-                # print(topk_log_probs[i, j].numpy())
-                # print('h is ', h.avg_log_prob)
-                # print(coverage)
+
                 new_hyp = h.extend(token=topk_ids[i, j].numpy(),
                                    log_prob=topk_log_probs[i, j],
                                    state=new_state,

@@ -114,12 +114,14 @@ def main():
         train(params)
 
     elif params["mode"] == "eval":
-        params["batch_size"] = params["beam_size"]
+        #params["batch_size"] = params["beam_size"]
+        params["batch_size"] = 1
         params["training"] = False
         evaluate(params)
 
     elif params["mode"] == "test":
-        params["batch_size"] = params["beam_size"]
+        #params["batch_size"] = params["beam_size"]
+        params["batch_size"] = 1
         params["training"] = False
         predict_result(params)
 

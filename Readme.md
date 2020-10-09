@@ -12,7 +12,7 @@
     + decoders/  # 使用attention机制
     + models/
     + batcher.py
-    + test_helper.py  # 比较greedy search 和 beam search 两种方式的预测效果
+    + test_helper.py  # 比较greedy search 和 beam search 两种预测效果
     + train_eval_test.py
     + train_helper.py
 + seq2seq_pgn_tf2 (seq2seq + pgn模型结构)
@@ -33,8 +33,6 @@
     + multi_proc_utils 多进程数据处理
 
 
-使用步骤:
+运行步骤:
 1. 依次运行utils目录下的 preprocess.py、data_loader.py、build_w2v.py、data_utils.py文件，预处理数据，构建数据集和词向量。
 2. 每个模型的bin目录下都有main.py文件，配置好模型的参数，选择训练、验证、测试三种模式，运行即可。
-
-![](images/self-attention.png)

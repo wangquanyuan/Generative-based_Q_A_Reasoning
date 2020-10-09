@@ -141,14 +141,6 @@ class PGN_TRANSFORMER(tf.keras.Model):
                                       self.params["vocab_size"],
                                       self.params["batch_size"])
 
-        # outputs = dict(logits=tf.stack(final_dists, 1), attentions=attn_dists)
-        if self.params['mode'] == "train":
-            outputs = dict(logits=tf.stack(final_dists, 1), attentions=attn_dists, p_gens=p_gens)
-        else:
-            outputs = dict(logits=tf.stack(final_dists, 1),
-                           attentions=tf.stack(attn_dists, 1),
-                           p_gens=tf.stack(p_gens, 1))
-
+        outputs = dict(logits=tf.stack(final_dists, 1))
         return outputs
-
 
