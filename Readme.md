@@ -30,7 +30,6 @@
     + build_w2v  word2vec训练词向量
     + data_utils  从训练集中分出验证集
     + data_utils  工具函数
-    + multi_proc_utils 多进程数据处理
 
 
 运行步骤:
