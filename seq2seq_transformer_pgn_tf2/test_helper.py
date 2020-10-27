@@ -112,7 +112,7 @@ def beam_decode(model, batch, vocab, params):
         if dec_i is None:
             dec_input = dec_input
         else:
-            dec_input = tf.concat((dec_i, dec_input), 1)
+            dec_input = tf.concat((dec_i, dec_input), 2)
         returns = decode_onestep(enc_input, dec_input, embed_x, params,batch_oov_len,enc_extended_input)
         top_k_ids, topk_log_probs = returns['top_k_ids'],returns['top_k_log_probs']
         dec_i = dec_input
